@@ -1,0 +1,19 @@
+# Cubie A7Z 默认配置，适配已验证的 Debian 13 内核。
+temp_paths = [
+    "/sys/class/thermal/thermal_zone0/temp", # cpub_thermal_zone
+    "/sys/class/thermal/thermal_zone3/temp"  # cpul_thermal_zone
+]
+temp_min = 40.0
+temp_max = 75.0
+min_pwm = 60
+max_pwm = 255
+poll_interval_seconds = 2
+rediscovery_interval_seconds = 10
+disconnected_retry_seconds = 5
+# 温度全部失效时使用最高转速
+fail_safe_pwm = 255
+# 删除或注释此项表示退出时不写入；TOML 不支持 null
+shutdown_pwm = 255
+preferred_hwmon_name = "pwmfan"
+# 已确认驱动 hwmon 名称为 pwmfan；禁止选择其他设备
+allow_pwm_fallback = false

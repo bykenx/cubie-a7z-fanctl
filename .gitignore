@@ -1,0 +1,27 @@
+# Rust build output. Cargo.lock is intentionally tracked for this application.
+/target/
+
+# Debian staging, generated helper files and package artifacts.
+/debian/.debhelper/
+/debian/cubie-a7z-fanctl/
+/debian/tmp/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.substvars
+/debian/*.debhelper
+/debian/*.debhelper.log
+/dist/
+*.deb
+*.ddeb
+*.buildinfo
+*.changes
+*.orig.tar.*
+*.debian.tar.*
+
+# Python caches and OS/editor temporary files.
+__pycache__/
+*.py[cod]
+.DS_Store
+*~
+*.swp
+*.swo

@@ -1,0 +1,24 @@
+# Normalize text in Git and on checkout for Linux/macOS builds.
+* text=auto eol=lf
+
+# Keep build scripts, Rust manifests and packaging metadata textual.
+*.rs text eol=lf
+*.toml text eol=lf
+*.lock text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+Makefile text eol=lf
+debian/rules text eol=lf
+
+# Binary artifacts must never undergo newline conversion.
+*.deb binary -eol
+*.ddeb binary -eol
+*.gz binary -eol
+*.xz binary -eol
+*.zip binary -eol
+*.png binary -eol
+*.jpg binary -eol
+*.pdf binary -eol
+*.a binary -eol
+*.so binary -eol

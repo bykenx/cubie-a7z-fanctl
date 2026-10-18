@@ -1,0 +1,19 @@
+cubie-a7z-fanctl for Debian 13
+============================
+The service is not enabled or started on initial installation. The default
+configuration targets Cubie A7Z: hwmon name pwmfan, CPU temperature zones
+0 and 3, and fallback disabled.
+
+Configuration: /etc/cubie-a7z-fanctl/config.toml
+Validate and enable the service:
+  sudo cubie-a7z-fanctl --check-config
+  sudo systemctl enable --now cubie-a7z-fanctl
+Restart the service after editing its configuration.
+
+Configuration is managed as a Debian conffile; upgrades preserve administrator
+changes. Upgrades restart a running service and leave a stopped service stopped.
+Remove stops the service and retains configuration; purge also removes
+configuration and service enablement state.
+
+See README.md (possibly compressed) for build instructions, configuration and
+troubleshooting, and cubie-a7z-fanctl(8) for command-line details.

@@ -1,0 +1,61 @@
+.TH CUBIE-A7Z-FANCTL 8 "2026-10-19" "0.1.0" "System Administration"
+.SH NAME
+cubie-a7z-fanctl \- temperature based hwmon PWM fan controller
+.SH SYNOPSIS
+.B cubie-a7z-fanctl
+.RB [ --config " PATH"]
+.RB [ --check-config " | " --once ]
+.br
+.B cubie-a7z-fanctl
+.RB [ --help " | " --version ]
+.SH DESCRIPTION
+Controls a PWM fan using the first valid configured temperature sensor.
+Without a one-shot option, the program runs continuously.
+Missing sensors select the configured fail-safe speed. Missing PWM devices
+are periodically rediscovered. SIGINT and SIGTERM request a shutdown PWM
+write when shutdown_pwm is configured.
+.SH OPTIONS
+.TP
+.BI --config " PATH"
+Read TOML configuration from PATH. The default is
+/etc/cubie-a7z-fanctl/config.toml.
+.TP
+.B --check-config
+Validate configuration without accessing hardware.
+.TP
+.B --once
+Perform one cycle and retain its PWM value. Missing temperature uses fail-safe;
+missing PWM or failed writes cause a nonzero exit status.
+.TP
+.B --help
+Display usage.
+.TP
+.B --version
+Display version.
+.PP
+The check-config and once options are mutually exclusive. Help and version
+must be used alone and do not load configuration. Unknown, duplicate or
+conflicting arguments cause a nonzero exit status.
+.SH CONFIGURATION
+The installed defaults target Cubie A7Z: hwmon name pwmfan, temperature
+zones 0 and 3, with fallback disabled.
+Device numbering is discovered automatically.
+All fields in the example configuration are required except shutdown_pwm.
+Unknown fields are rejected. Configured temperature bounds are in degrees
+Celsius. Sensor readings are integer millidegrees Celsius in the range
+-40000 to 150000; the first valid configured sensor is used.
+PWM values are integers from 0 to 255; intervals are positive integer seconds.
+Configuration is loaded at startup; restart the service after editing it.
+.SH EXIT STATUS
+Zero indicates success. Invalid arguments or configuration, failed one-shot
+control, or a failed requested shutdown write return a nonzero status.
+Hardware errors in continuous mode are logged and retried.
+.SH FILES
+.I /etc/cubie-a7z-fanctl/config.toml
+.SH SAFETY
+Fallback PWM devices may control unrelated hardware. Verify device identity.
+The program only inspects pwm1_enable; it never changes that attribute.
+Omit shutdown_pwm to disable shutdown writes; TOML has no null value.
+.SH SEE ALSO
+.BR systemctl (1),
+.BR journalctl (1)

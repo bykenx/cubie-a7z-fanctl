@@ -1,0 +1,3 @@
+# Local hardware utility; this initial release is not an upload to the Debian
+# archive and has no Debian ITP bug to close. Do not invent a bug number.
+cubie-a7z-fanctl: initial-upload-closes-no-bugs [usr/share/doc/cubie-a7z-fanctl/changelog.Debian.gz:1]

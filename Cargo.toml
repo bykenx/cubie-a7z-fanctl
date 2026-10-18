@@ -1,0 +1,20 @@
+[package]
+name = "cubie-a7z-fanctl"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+description = "Temperature based hwmon PWM fan controller for Cubie A7Z"
+
+[dependencies]
+serde = { version = "=1.0.219", features = ["derive"] }
+toml = "=0.8.23"
+signal-hook = "=0.3.18"
+
+[dev-dependencies]
+tempfile = { version = "=3.19.1", default-features = false }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

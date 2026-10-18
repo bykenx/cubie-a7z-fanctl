@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+export CARGO_TARGET_DIR = $(CURDIR)/target
+export CARGO_NET_OFFLINE = true
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+
+
+override_dh_auto_build:
+	cargo build --release --locked --offline
+	python3 scripts/dependency-licenses.py
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	cargo test --locked --offline
+endif
+
+override_dh_auto_install:
+	install -D -m 0755 target/release/cubie-a7z-fanctl debian/tmp/usr/sbin/cubie-a7z-fanctl
+	install -D -m 0644 config/config.toml debian/tmp/etc/cubie-a7z-fanctl/config.toml
+
+override_dh_installsystemd:
+	dh_installsystemd --no-enable --no-start --restart-after-upgrade
+
+override_dh_auto_clean:
+	rm -rf target
+
+# Cargo's release profile already strips DWARF; dwz has no debug data to process.
+override_dh_dwz:

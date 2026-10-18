@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+# debhelper 13.24 omits its stop-on-remove snippet when --no-start is set.
+# Keep first installation inactive, but still stop an administrator-started unit.
+if [ "$1" = remove ] && [ -z "${DPKG_ROOT:-}" ] && [ -d /run/systemd/system ]; then
+    deb-systemd-invoke stop cubie-a7z-fanctl.service >/dev/null || true
+fi
+#DEBHELPER#

@@ -1,0 +1,14 @@
+Source: cubie-a7z-fanctl
+Section: utils
+Priority: optional
+Maintainer: Cubie A7Z fanctl contributors <cubie-a7z-fanctl@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13), cargo (>= 1.85), rustc (>= 1.85), python3 (>= 3.11)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: cubie-a7z-fanctl
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: temperature based PWM fan controller for Cubie A7Z
+ Controls a Linux hwmon PWM fan using CPU or SoC temperatures, with
+ automatic device rediscovery and configurable fail-safe fan speeds.

@@ -1,0 +1,7 @@
+cubie-a7z-fanctl (0.1.0-1) unstable; urgency=medium
+
+  * Initial release with offline Rust dependencies and systemd integration.
+  * Default to verified Cubie A7Z sensors and pwmfan,
+    with PWM fallback disabled.
+
+ -- Cubie A7Z fanctl contributors <cubie-a7z-fanctl@users.noreply.github.com>  Sun, 18 Oct 2026 22:00:00 +0800
