@@ -25,3 +25,6 @@ __pycache__/
 *~
 *.swp
 *.swo
+
+# Device-tree overlay build output.
+/contrib/armbian/*.dtbo

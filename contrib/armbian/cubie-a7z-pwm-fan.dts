@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+// Cubie A7Z, Armbian sun60iw2 vendor 6.6 BSP only.
+// Wiring: PJ27, parent PWM1 channel 9, 25000 ns (40 kHz), normal polarity,
+// supplied by reg_dc1sw1, as defined by Radxa:
+// https://github.com/radxa/allwinner-device/blob/device-a733-v1.4.8/configs/cubie_a7z/linux-6.6/board.dts
+// No thermal cooling-maps: userspace controls the fan without kernel competition.
+/dts-v1/;
+/plugin/;
+
+&pwm1_9_pins_active {
+    pins = "PJ27";
+    function = "pwm1_9";
+    drive-strength = <10>;
+};
+
+&pwm1_9_pins_sleep {
+    pins = "PJ27";
+    function = "gpio_in";
+    bias-pull-down;
+};
+
+&pwm1 {
+    status = "okay";
+};
+
+&pwm1_9 {
+    pinctrl-names = "active", "sleep";
+    pinctrl-0 = <&pwm1_9_pins_active>;
+    pinctrl-1 = <&pwm1_9_pins_sleep>;
+    status = "okay";
+};
+
+&soc {
+    pwm-fan {
+        compatible = "pwm-fan";
+        fan-supply = <&reg_dc1sw1>;
+        pwms = <&pwm1 9 25000 0>;
+        status = "okay";
+    };
+};

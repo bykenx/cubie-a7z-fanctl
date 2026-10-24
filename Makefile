@@ -5,7 +5,7 @@ PYTHON ?= python3
 RELEASE_NAME = cubie-a7z-fanctl-$(VERSION)-linux-arm64
 VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml)
 
-.PHONY: help fetch build fmt clippy test check licenses deb lintian source-archive release clean
+.PHONY: help fetch build fmt clippy test check licenses deb lintian source-archive release armbian-install armbian-test clean
 
 help:
 	@printf '%s\n' \
@@ -20,6 +20,8 @@ help:
 	  'make lintian        Check the current Debian binary package' \
 	  'make source-archive Prepare Debian upstream source archive' \
 	  'make release        Build Debian arm64 release assets in dist/' \
+	  'make armbian-install Install the A7Z overlay on Armbian (sudo)' \
+	  'make armbian-test   Test the overlay installer (dtc, Python 3)' \
 	  'make clean          Remove Cargo build output'
 
 fetch:
@@ -52,7 +54,7 @@ lintian:
 source-archive:
 	LC_ALL=C COPYFILE_DISABLE=1 tar --no-xattrs --no-acls \
 	  --exclude='./.git' --exclude='./target' --exclude='./debian' \
-	  --exclude='./dist' --exclude='__pycache__' \
+	  --exclude='./dist' --exclude='__pycache__' --exclude='*.dtbo' \
 	  --exclude='*.deb' --exclude='*.ddeb' --exclude='*.buildinfo' --exclude='*.changes' \
 	  -czf ../cubie-a7z-fanctl_$(VERSION).orig.tar.gz .
 
@@ -70,6 +72,12 @@ release: deb
 	tar -C target -czf dist/$(RELEASE_NAME).tar.gz $(RELEASE_NAME)
 	cp ../cubie-a7z-fanctl_$$(dpkg-parsechangelog -S Version)_arm64.deb dist/
 	deb_version=$$(dpkg-parsechangelog -S Version); cd dist && sha256sum cubie-a7z-fanctl_$${deb_version}_arm64.deb $(RELEASE_NAME).tar.gz > SHA256SUMS
+
+armbian-install:
+	. ./contrib/armbian/install.sh; _armbian_install "$(CURDIR)/contrib/armbian" / /usr/sbin/armbian-add-overlay
+
+armbian-test:
+	$(PYTHON) -m unittest discover -s tests -p 'test_armbian_install.py'
 
 clean:
 	$(CARGO) clean

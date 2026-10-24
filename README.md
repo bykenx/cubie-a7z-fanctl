@@ -3,18 +3,33 @@
 根据 CPU/SoC 温度，通过 Linux hwmon sysfs 接口自动控制 Cubie A7Z 的 PWM 风扇。
 支持线性调速、设备重新发现、温度失效保护，以及 SIGTERM/SIGINT 退出处理。
 
-目标平台为 Debian 13（trixie）arm64，采用 MIT 许可证。
+面向 Debian 13（trixie）arm64，支持 Radxa 原版 Debian 与基于 Debian 13 的 Armbian，采用 MIT 许可证。
 
 ## 使用
 
 ### 环境要求
 
-- Debian 13 arm64，使用 systemd 管理服务。
+- Radxa 原版 Debian 13 或基于 Debian 13 的 Armbian，arm64，使用 systemd 管理服务。
 - 风扇硬件、内核驱动和设备树已配置，hwmon 暴露可写的 `pwm1` 节点。
 - 至少一个可读取的 CPU/SoC 温度节点。
 
 其他具有兼容 hwmon 接口的 Linux 系统也可从源码构建使用。
 本程序不加载驱动或修改设备树；使用前应停止控制同一风扇的其他服务。
+
+### 系统安装差异
+
+| 系统主页 | 已验证镜像 |
+|---|---|
+| [Radxa 原版 Debian](https://github.com/radxa-build/radxa-a733) | [Trixie CLI（rsdk-t6）](https://github.com/radxa-build/radxa-a733/releases/download/rsdk-t6/radxa-a733_trixie_cli_t6.output_512.img.xz) |
+| [Armbian](https://armbian.cn/boards/cubie-a7z) | [Trixie vendor minimal](https://dl.armbian.com/cubie-a7z/Trixie_vendor_minimal) |
+
+> [!IMPORTANT]
+> **Radxa 原版 Debian**：已验证的镜像已提供风扇接口，直接按下文安装并启用服务。
+>
+> **Armbian**：已提供 `pwmfan` 和 `pwm1` 时可直接安装；接口缺失时，先按 [Armbian 适配说明](contrib/armbian/README.md)运行 `make armbian-install`，手动重启后再安装服务。
+
+Armbian 镜像链接为滚动下载入口；附带的 overlay 适用于 `sun60iw2` vendor 6.6 内核。
+两种系统共用相同的安装包、默认配置及服务管理命令，后续流程一致。
 
 ### 下载与安装
 
@@ -71,7 +86,7 @@ sudo systemctl daemon-reload
 
 ### 默认配置
 
-[默认配置](config/config.toml)已适配经过实机验证的 A7Z 内核：
+[默认配置](config/config.toml)已在 Radxa 原版 Debian 和完成上述适配的 Armbian 上实机验证：
 自动查找 hwmon 名称为 `pwmfan` 的风扇，依次读取 CPU 温度节点 zone0 和 zone3。
 使用相同内核与驱动的 A7Z 通常无需修改，检查配置后即可启动服务。
 
@@ -235,6 +250,7 @@ target/release/cubie-a7z-fanctl --check-config --config config/config.toml
 
 测试使用临时目录和模拟 I/O，覆盖配置、温度回退、设备发现、写入恢复、fail-safe 和日志节流；
 子进程测试验证 `--once` 与 SIGTERM/SIGINT，不修改真实 `/sys`。
+Armbian overlay 安装器测试使用 Python 3 和 `device-tree-compiler`，通过 `make armbian-test` 运行。
 
 ### Debian 打包
 
@@ -292,6 +308,7 @@ make check
 | `tests/` | 集成测试和子进程测试 |
 | `config/` | A7Z 默认配置 |
 | `debian/` | Debian 打包、systemd unit 和手册 |
+| `contrib/armbian/` | Armbian 风扇 overlay、安装工具和说明 |
 | `scripts/` | 第三方许可证生成工具 |
 
 `make help` 查看全部命令；`make fmt`、`make clippy`、`make test` 可单独检查，
